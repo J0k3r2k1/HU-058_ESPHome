@@ -805,7 +805,7 @@ void Aip33628Panel::loop() {
     // number that could be anything. The upper dot still follows the network.
     write_digit_(2, (char) ('0' + now.second / 10));
     write_digit_(3, (char) ('0' + now.second % 10));
-    if (online_) write_pos_(1, SEG_ANNUN, true);
+    write_pos_(1, SEG_ANNUN, true);
     write_pos_(1, SEG_ANNUN2, true);
     render_();
     return;
@@ -829,7 +829,7 @@ void Aip33628Panel::loop() {
   if (colon) {
     // Both dots when the network is up, the lower one alone when it is not.
     // Block 2 COM low LED1 is the lower dot, see docs/display-map.md.
-    if (online_) write_pos_(1, SEG_ANNUN, true);
+    write_pos_(1, SEG_ANNUN, true);
     write_pos_(1, SEG_ANNUN2, true);
   }
   if (twelve_hour_ && !pm) {

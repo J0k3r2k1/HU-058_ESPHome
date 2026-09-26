@@ -1,3 +1,43 @@
+## 🚀 ESP32-C3 Support & Branch Overview
+
+This repository provides two different branches depending on your hardware needs and preferences:
+
+### 1. `pure-esp32c3-support` Branch
+This branch adds native compatibility for the **ESP32-C3 (RISC-V architecture)** by adapting the direct register writes to the required syntax (`GPIO.out_w1tc.val` / `GPIO.out_w1ts.val`).
+
+### 2. `feature/esp32c3-compatibility` Branch (Recommended)
+This branch includes the **ESP32-C3 compatibility fix** from above AND additionally integrates the **fix for the flashing colon / separator dots** (resolving the issue described in [misterblack1/HU-058_ESPHome#4](https://github.com/misterblack1/HU-058_ESPHome/issues/4)). 
+
+---
+
+## 🛠️ Framework Compatibility & Troubleshooting
+
+Depending on which framework you use in your ESPHome configuration, please note the following for both branches:
+
+### 1. Using the `arduino` Framework (Recommended / Tested)
+If you are using the `arduino` framework, the components work **out of the box** without any extra configuration. The required timer headers are available by default:
+
+```yaml
+esp32:
+  variant: esp32c3
+  framework:
+    type: arduino
+```
+
+### 2. Using the `esp-idf` Framework
+If you prefer to use the native `esp-idf` framework, compilation will fail with a `fatal error: driver/gptimer.h: No such file or directory`. 
+
+This happens because ESPHome excludes unused native drivers by default to save space. To fix this, you must explicitly force ESPHome to include the built-in timer component by adding this to the component's `__init__.py`:
+
+```python
+from esphome.components.esp32 import include_builtin_idf_component
+
+# Inside your async def to_code(config) function:
+include_builtin_idf_component("esp_driver_gptimer")
+```
+
+---
+
 # Open firmware for the HU-058D WiFi clock
 
 The AliExpress kit sold as an "ESP8266 IoT Colorful WiFi Clock Kit" ships closed firmware which is lame and terrible. (And really hard to use.) I have reverse engineered the way to drive the display so you can use your own microcontroller. 
